@@ -7,6 +7,13 @@ A consolidated collection of implementation codebases used to replicate experime
 | Paper | Directory | Status |
 |-------|-----------|--------|
 | [RL's Razor: Why Online RL Forgets Less](https://arxiv.org/abs/2509.04259) | [why_RL_forget_less/](why_RL_forget_less/) | ✅ Complete |
+| [Deep Residual Learning for Image Recognition](https://openaccess.thecvf.com/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf) | [Deep Residual Learning for Image Recognition/](Deep%20Residual%20Learning%20for%20Image%20Recognition/) | ✅ Complete |
+
+### Project Highlights
+
+**RL's Razor (2024)**: Demonstrates why online RL forgets less than supervised fine-tuning through controlled ParityMNIST experiments, showing that forgetting is predicted by KL divergence.
+
+**ResNet (He et al., CVPR 2016)**: Reproduces the degradation problem experiment on CIFAR-10, showing that deeper plain networks train worse while ResNets with skip connections scale effectively.
 
 ## Structure
 
@@ -14,10 +21,14 @@ Each subdirectory contains a self-contained reproduction of a specific paper:
 
 ```
 papers-reproduction/
-├── why_RL_forget_less/     # RL's Razor paper reproduction
-│   ├── src/                # Source code
-│   ├── notebooks/          # Experiment notebooks
-│   └── README.md           # Paper-specific documentation
+├── why_RL_forget_less/                         # RL's Razor paper
+│   ├── src/rl_razor_paritymnist/              # Source code
+│   ├── notebooks/                              # Experiment notebooks
+│   └── README.md                               # Paper-specific docs
+├── Deep Residual Learning for Image Recognition/  # ResNet paper
+│   ├── src/resnet_cifar10/                    # Source code
+│   ├── notebooks/                              # Experiment notebooks
+│   └── README.md                               # Paper-specific docs
 └── ...
 ```
 
@@ -25,12 +36,20 @@ papers-reproduction/
 
 Each project has its own dependencies and setup instructions. Navigate to the specific project directory and follow its README.
 
-### Example
+### Example: RL's Razor
 
 ```bash
 cd why_RL_forget_less
-uv venv && source .venv/bin/activate
-uv pip install -e .
+pip install -e .
+jupyter notebook notebooks/experiment.ipynb
+```
+
+### Example: ResNet
+
+```bash
+cd "Deep Residual Learning for Image Recognition"
+pip install -e .
+jupyter notebook notebooks/experiment.ipynb
 ```
 
 ## Contributing
