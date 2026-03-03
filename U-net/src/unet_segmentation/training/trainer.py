@@ -6,8 +6,6 @@ import torch
 import torch.nn as nn
 
 from ..evaluation.metrics import (
-    SegmentationMetrics,
-    compute_dice,
     compute_iou,
     compute_pixel_accuracy,
     evaluate_model,
