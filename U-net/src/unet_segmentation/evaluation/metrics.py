@@ -34,7 +34,7 @@ def compute_iou(predictions: torch.Tensor, targets: torch.Tensor, num_classes: i
         intersection = (pred_mask & target_mask).sum().float()
         union = (pred_mask | target_mask).sum().float()
         if union == 0:
-            ious.append(torch.tensor(1.0))  # Empty class — perfect score
+            ious.append(union.new_tensor(1.0))  # Empty class — perfect score
         else:
             ious.append(intersection / union)
     per_class = torch.stack(ious)
