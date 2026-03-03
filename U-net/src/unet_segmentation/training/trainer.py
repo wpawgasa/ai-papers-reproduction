@@ -12,6 +12,7 @@ from ..evaluation.metrics import (
     compute_pixel_accuracy,
     evaluate_model,
 )
+from ..utils.loss import build_criterion
 
 
 @dataclass
@@ -82,6 +83,7 @@ def train_model(
     config,
     device: torch.device,
     verbose: bool = True,
+    loss_config=None,
 ) -> dict:
     """Complete training loop with evaluation and history tracking.
 
@@ -92,6 +94,7 @@ def train_model(
         config: TrainConfig with hyperparameters.
         device: Compute device.
         verbose: Print progress every 5 epochs.
+        loss_config: LossConfig for weighted cross-entropy. If None, uses plain CE.
 
     Returns:
         Dictionary with training history (lists of metrics per epoch).
@@ -112,7 +115,7 @@ def train_model(
         patience=config.lr_schedule_patience,
     )
 
-    criterion = nn.CrossEntropyLoss()
+    criterion = build_criterion(loss_config, train_loader, device=device)
 
     history = {
         "train_loss": [],

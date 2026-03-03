@@ -122,3 +122,66 @@ class WeightedCrossEntropyLoss(nn.Module):
         else:
             loss = F.cross_entropy(logits, targets, weight=self.class_weights)
         return loss
+
+
+def estimate_class_weights(
+    dataloader: torch.utils.data.DataLoader,
+    num_classes: int = 2,
+    max_batches: int = 50,
+) -> torch.Tensor:
+    """Estimate inverse-frequency class weights from a dataloader.
+
+    Scans up to max_batches to accumulate pixel counts per class,
+    then returns weights proportional to 1/frequency.
+
+    Args:
+        dataloader: Training DataLoader yielding (images, masks) tuples.
+        num_classes: Number of segmentation classes.
+        max_batches: Maximum batches to scan (caps cost on large datasets).
+
+    Returns:
+        Tensor of shape (num_classes,) with normalized class weights.
+    """
+    counts = torch.zeros(num_classes, dtype=torch.float64)
+    for i, (_, masks) in enumerate(dataloader):
+        for cls in range(num_classes):
+            counts[cls] += (masks == cls).sum().item()
+        if i + 1 >= max_batches:
+            break
+    counts = counts.clamp(min=1.0)
+    weights = 1.0 / counts
+    weights /= weights.sum()
+    return weights.float()
+
+
+def build_criterion(
+    loss_config=None,
+    dataloader: torch.utils.data.DataLoader | None = None,
+    num_classes: int = 2,
+    device: torch.device | None = None,
+) -> nn.Module:
+    """Build a loss function from LossConfig.
+
+    When loss_config is provided and a training dataloader is available,
+    estimates class-frequency weights for balancing. Otherwise falls back
+    to standard (unweighted) cross-entropy.
+
+    Args:
+        loss_config: LossConfig instance (or None for plain CE).
+        dataloader: Training DataLoader for class weight estimation.
+        num_classes: Number of segmentation classes.
+        device: Target device for the loss module.
+
+    Returns:
+        An nn.Module loss function compatible with (logits, targets) calls.
+    """
+    if loss_config is None:
+        return nn.CrossEntropyLoss()
+
+    class_weights = None
+    if dataloader is not None:
+        class_weights = estimate_class_weights(dataloader, num_classes)
+        if device is not None:
+            class_weights = class_weights.to(device)
+
+    return WeightedCrossEntropyLoss(class_weights=class_weights)
