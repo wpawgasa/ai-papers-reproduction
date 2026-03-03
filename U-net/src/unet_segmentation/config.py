@@ -1,6 +1,6 @@
 """Configuration dataclasses for U-Net segmentation experiment."""
 
-from dataclasses import dataclass, field
+from dataclasses import dataclass
 
 
 @dataclass
