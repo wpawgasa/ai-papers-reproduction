@@ -32,7 +32,7 @@ def compute_iou(predictions: torch.Tensor, targets: torch.Tensor, num_classes: i
         target_mask = targets == cls
         intersection = (pred_mask & target_mask).sum().float()
         union = (pred_mask | target_mask).sum().float()
-        if union == 0:
+        if union.item() == 0:
             ious.append(union.new_tensor(1.0))  # Empty class — perfect score
         else:
             ious.append(intersection / union)
@@ -56,7 +56,7 @@ def compute_dice(predictions: torch.Tensor, targets: torch.Tensor) -> float:
     target_fg = (targets == 1).float()
     intersection = (pred_fg * target_fg).sum()
     total = pred_fg.sum() + target_fg.sum()
-    if total == 0:
+    if total.item() == 0:
         return 1.0
     return (2.0 * intersection / total).item()
 

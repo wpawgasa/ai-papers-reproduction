@@ -12,7 +12,7 @@ import scipy.ndimage
 import torch
 from PIL import Image
 from scipy.interpolate import RectBivariateSpline
-from torch.utils.data import DataLoader, Dataset, Subset
+from torch.utils.data import DataLoader, Dataset
 from torchvision import datasets, transforms
 
 

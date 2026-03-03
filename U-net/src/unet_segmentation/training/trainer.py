@@ -114,6 +114,7 @@ def train_model(
     )
 
     criterion = build_criterion(loss_config, train_loader, device=device)
+    num_classes = getattr(config, "num_classes", 2)
 
     history = {
         "train_loss": [],
@@ -128,10 +129,23 @@ def train_model(
 
     for epoch in range(1, config.epochs + 1):
         # Train
-        train_metrics = train_one_epoch(model, train_loader, criterion, optimizer, device)
+        train_metrics = train_one_epoch(
+            model,
+            train_loader,
+            criterion,
+            optimizer,
+            device,
+            num_classes=num_classes,
+        )
 
         # Evaluate
-        test_metrics = evaluate_model(model, test_loader, criterion, device)
+        test_metrics = evaluate_model(
+            model,
+            test_loader,
+            criterion,
+            device,
+            num_classes=num_classes,
+        )
 
         # Learning rate scheduling
         scheduler.step(test_metrics.loss)
