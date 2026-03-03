@@ -1,0 +1,12 @@
+"""Reproducibility utilities."""
+
+import random
+
+import torch
+
+
+def set_seed(seed: int = 42) -> None:
+    """Set random seeds for reproducibility."""
+    random.seed(seed)
+    torch.manual_seed(seed)
+    torch.cuda.manual_seed_all(seed)

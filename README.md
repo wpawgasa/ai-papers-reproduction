@@ -9,6 +9,7 @@ A consolidated collection of implementation codebases used to replicate experime
 | [RL's Razor: Why Online RL Forgets Less](https://arxiv.org/abs/2509.04259) | [why_RL_forget_less/](why_RL_forget_less/) | ✅ Complete |
 | [Deep Residual Learning for Image Recognition](https://openaccess.thecvf.com/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf) | [Deep Residual Learning for Image Recognition/](Deep%20Residual%20Learning%20for%20Image%20Recognition/) | ✅ Complete |
 | [FNet: Mixing Tokens with Fourier Transforms](https://arxiv.org/abs/2105.03824) | [FNet/](FNet/) | ✅ Complete |
+| [U-Net: Convolutional Networks for Biomedical Image Segmentation](https://arxiv.org/abs/1505.04597) | [U-net/](U-net/) | ✅ Complete |
 
 ### Project Highlights
 
@@ -17,6 +18,8 @@ A consolidated collection of implementation codebases used to replicate experime
 **ResNet (He et al., CVPR 2016)**: Reproduces the degradation problem experiment on CIFAR-10, showing that deeper plain networks train worse while ResNets with skip connections scale effectively.
 
 **FNet (Lee-Thorp et al., NAACL 2022)**: Replaces Transformer self-attention with 2D Fourier Transform for token mixing. Achieves 92-97% of BERT accuracy on GLUE with 1.8× faster training and zero learnable parameters in the mixing layer.
+
+**U-Net (Ronneberger et al., MICCAI 2015)**: Reproduces the symmetric encoder-decoder architecture with skip connections for image segmentation. Demonstrates that elastic deformation augmentation enables effective training from very few annotated images using the Oxford-IIIT Pet Dataset.
 
 ## Structure
 
@@ -34,6 +37,11 @@ papers-reproduction/
 │   └── README.md                               # Paper-specific docs
 ├── FNet/                                       # FNet paper
 │   ├── src/                                    # Source code
+│   ├── notebooks/                              # Experiment notebooks
+│   ├── summary.md                              # Comprehensive paper analysis
+│   └── README.md                               # Paper-specific docs
+├── U-net/                                      # U-Net paper
+│   ├── src/unet_segmentation/                 # Source code
 │   ├── notebooks/                              # Experiment notebooks
 │   ├── summary.md                              # Comprehensive paper analysis
 │   └── README.md                               # Paper-specific docs
@@ -64,6 +72,14 @@ jupyter notebook notebooks/experiment.ipynb
 
 ```bash
 cd FNet
+pip install -e .
+jupyter notebook notebooks/experiment.ipynb
+```
+
+### Example: U-Net
+
+```bash
+cd U-net
 pip install -e .
 jupyter notebook notebooks/experiment.ipynb
 ```
