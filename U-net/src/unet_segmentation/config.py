@@ -21,6 +21,7 @@ class AugmentationConfig:
     elastic_sigma: float = 10.0
     elastic_grid_spacing: int = 3
     rotation: bool = True
+    max_rotation_degrees: float = 30.0
     flip: bool = True
     gray_value_variation: bool = True
     gray_value_std: float = 0.1

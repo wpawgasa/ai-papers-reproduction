@@ -8,6 +8,7 @@ as described in Section 3 of the U-Net paper.
 import random
 
 import numpy as np
+import scipy.ndimage
 import torch
 from PIL import Image
 from scipy.interpolate import RectBivariateSpline
@@ -167,9 +168,12 @@ class PetSegmentationDataset(Dataset):
         # Random rotation
         if self.aug_config.rotation:
             if random.random() > 0.5:
-                k = random.choice([1, 2, 3])
-                image = np.rot90(image, k)
-                mask = np.rot90(mask, k)
+                angle = random.uniform(
+                    -self.aug_config.max_rotation_degrees,
+                    self.aug_config.max_rotation_degrees,
+                )
+                image = scipy.ndimage.rotate(image, angle, reshape=False, order=1, mode="nearest")
+                mask = scipy.ndimage.rotate(mask, angle, reshape=False, order=0, mode="nearest")
 
         # Gray value variation (random brightness/contrast)
         if self.aug_config.gray_value_variation:
