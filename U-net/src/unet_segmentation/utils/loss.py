@@ -162,9 +162,10 @@ def build_criterion(
 ) -> nn.Module:
     """Build a loss function from LossConfig.
 
-    When loss_config is provided and a training dataloader is available,
-    estimates class-frequency weights for balancing. Otherwise falls back
-    to standard (unweighted) cross-entropy.
+    When loss_config is provided and ``loss_config.use_class_weights`` is True
+    and a training dataloader is available, estimates inverse-frequency class
+    weights for balancing. Otherwise falls back to standard (unweighted)
+    cross-entropy.
 
     Args:
         loss_config: LossConfig instance (or None for plain CE).
@@ -179,7 +180,7 @@ def build_criterion(
         return nn.CrossEntropyLoss()
 
     class_weights = None
-    if dataloader is not None:
+    if loss_config.use_class_weights and dataloader is not None:
         class_weights = estimate_class_weights(dataloader, num_classes)
         if device is not None:
             class_weights = class_weights.to(device)

@@ -60,11 +60,14 @@ class TrainConfig:
 
 @dataclass
 class LossConfig:
-    """Loss function configuration."""
+    """Loss function configuration.
 
-    w0: float = 10.0
-    sigma: float = 5.0
-    use_border_weights: bool = False
+    Controls whether class-frequency balancing is applied. Full border-weight
+    map computation (w0, sigma) requires instance-level masks and is handled
+    separately via ``compute_weight_map`` in ``utils.loss``.
+    """
+
+    use_class_weights: bool = True
 
 
 @dataclass
