@@ -32,10 +32,12 @@ def compute_iou(predictions: torch.Tensor, targets: torch.Tensor, num_classes: i
         target_mask = targets == cls
         intersection = (pred_mask & target_mask).sum().float()
         union = (pred_mask | target_mask).sum().float()
-        if union.item() == 0:
-            ious.append(union.new_tensor(1.0))  # Empty class — perfect score
-        else:
-            ious.append(intersection / union)
+        iou = torch.where(
+            union == 0,
+            union.new_tensor(1.0),  # Empty class — perfect score
+            intersection / union,
+        )
+        ious.append(iou)
     per_class = torch.stack(ious)
     return per_class, per_class.mean().item()
 
@@ -56,9 +58,8 @@ def compute_dice(predictions: torch.Tensor, targets: torch.Tensor) -> float:
     target_fg = (targets == 1).float()
     intersection = (pred_fg * target_fg).sum()
     total = pred_fg.sum() + target_fg.sum()
-    if total.item() == 0:
-        return 1.0
-    return (2.0 * intersection / total).item()
+    dice = torch.where(total == 0, total.new_tensor(1.0), 2.0 * intersection / total)
+    return dice.item()
 
 
 def compute_pixel_accuracy(predictions: torch.Tensor, targets: torch.Tensor) -> float:
