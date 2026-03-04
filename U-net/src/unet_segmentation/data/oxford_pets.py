@@ -185,6 +185,16 @@ class PetSegmentationDataset(Dataset):
         return image, mask
 
 
+_NUMPY_SEED_MAX = 2**32  # NumPy/random seeds must be in [0, 2**32)
+
+
+def _worker_init_fn(_worker_id: int) -> None:
+    """Seed per-worker RNGs so augmentation is reproducible in multi-worker loads."""
+    seed = torch.initial_seed() % _NUMPY_SEED_MAX
+    random.seed(seed)
+    np.random.seed(seed)
+
+
 def get_dataloaders(config) -> dict[str, DataLoader]:
     """Create train and test DataLoaders from experiment config.
 
@@ -216,6 +226,7 @@ def get_dataloaders(config) -> dict[str, DataLoader]:
         shuffle=True,
         num_workers=config.data.num_workers,
         pin_memory=config.data.pin_memory,
+        worker_init_fn=_worker_init_fn,
     )
 
     test_loader = DataLoader(
