@@ -82,6 +82,7 @@ def train_model(
     device: torch.device,
     verbose: bool = True,
     loss_config=None,
+    num_classes: int = 2,
 ) -> dict:
     """Complete training loop with evaluation and history tracking.
 
@@ -89,10 +90,13 @@ def train_model(
         model: U-Net model.
         train_loader: Training DataLoader.
         test_loader: Test/validation DataLoader.
-        config: TrainConfig with hyperparameters.
+        config: TrainConfig with hyperparameters (lr, momentum, weight_decay,
+            lr_schedule_factor, lr_schedule_patience, epochs).
         device: Compute device.
         verbose: Print progress every 5 epochs.
         loss_config: LossConfig for weighted cross-entropy. If None, uses plain CE.
+        num_classes: Number of segmentation classes. Pass explicitly to override
+            the default; this is used for metrics and criterion class weights.
 
     Returns:
         Dictionary with training history (lists of metrics per epoch).
@@ -112,12 +116,6 @@ def train_model(
         factor=config.lr_schedule_factor,
         patience=config.lr_schedule_patience,
     )
-
-    # Prefer model config (ExperimentConfig.model.num_classes) over train config fallback
-    if hasattr(config, "model") and hasattr(config.model, "num_classes"):
-        num_classes = config.model.num_classes
-    else:
-        num_classes = getattr(config, "num_classes", 2)
 
     criterion = build_criterion(loss_config, train_loader, device=device, num_classes=num_classes)
     history = {

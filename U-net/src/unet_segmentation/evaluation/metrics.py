@@ -43,16 +43,21 @@ def compute_iou(predictions: torch.Tensor, targets: torch.Tensor, num_classes: i
 
 
 def compute_dice(predictions: torch.Tensor, targets: torch.Tensor) -> float:
-    """Compute Dice coefficient (F1 score for segmentation).
+    """Compute foreground Dice coefficient for binary segmentation.
 
-    Dice = 2 * |P ∩ T| / (|P| + |T|)
+    Computes Dice (F1) for class 1 (foreground) only:
+        Dice = 2 * |P ∩ T| / (|P| + |T|)
+
+    This is intentionally binary: class 0 is background, class 1 is foreground.
+    For multi-class Dice, use a per-class loop over ``compute_iou`` or extend
+    this function with a ``foreground_class`` parameter.
 
     Args:
         predictions: Predicted class labels (B, H, W).
         targets: Ground truth class labels (B, H, W).
 
     Returns:
-        Dice coefficient as a float.
+        Foreground Dice coefficient as a float.
     """
     pred_fg = (predictions == 1).float()
     target_fg = (targets == 1).float()
