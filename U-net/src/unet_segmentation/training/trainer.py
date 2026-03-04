@@ -113,13 +113,13 @@ def train_model(
         patience=config.lr_schedule_patience,
     )
 
-    criterion = build_criterion(loss_config, train_loader, device=device)
     # Prefer model config (ExperimentConfig.model.num_classes) over train config fallback
     if hasattr(config, "model") and hasattr(config.model, "num_classes"):
         num_classes = config.model.num_classes
     else:
         num_classes = getattr(config, "num_classes", 2)
 
+    criterion = build_criterion(loss_config, train_loader, device=device, num_classes=num_classes)
     history = {
         "train_loss": [],
         "train_iou": [],
