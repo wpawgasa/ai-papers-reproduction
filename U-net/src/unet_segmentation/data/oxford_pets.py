@@ -60,15 +60,30 @@ def elastic_deformation(
     map_row = np.clip(row_grid + dy, 0, h - 1).astype(np.float32)
     map_col = np.clip(col_grid + dx, 0, w - 1).astype(np.float32)
 
-    # Convert to integer indices for nearest-neighbor sampling
+    # Convert to integer indices for nearest-neighbor sampling (for mask)
     map_row_int = np.round(map_row).astype(np.int32)
     map_col_int = np.round(map_col).astype(np.int32)
 
     # Apply deformation
+    # Use interpolated sampling for the image to preserve smooth elastic deformation
     if image.ndim == 3:
-        deformed_image = image[map_row_int, map_col_int, :]
+        deformed_image = np.empty_like(image)
+        for c in range(image.shape[2]):
+            deformed_image[..., c] = scipy.ndimage.map_coordinates(
+                image[..., c],
+                [map_row, map_col],
+                order=1,
+                mode="reflect",
+            )
     else:
-        deformed_image = image[map_row_int, map_col_int]
+        deformed_image = scipy.ndimage.map_coordinates(
+            image,
+            [map_row, map_col],
+            order=1,
+            mode="reflect",
+        )
+
+    # Keep nearest-neighbor sampling for the mask to preserve discrete labels
     deformed_mask = mask[map_row_int, map_col_int]
 
     return deformed_image, deformed_mask
