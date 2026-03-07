@@ -118,7 +118,10 @@ class WeightedCrossEntropyLoss(nn.Module):
         """
         if pixel_weights is not None:
             loss = F.cross_entropy(logits, targets, weight=self.class_weights, reduction="none")
-            loss = (loss * pixel_weights).mean()
+            pixel_weights = pixel_weights.to(dtype=loss.dtype)
+            weighted_loss = loss * pixel_weights
+            denom = pixel_weights.sum().clamp_min(1e-8)
+            loss = weighted_loss.sum() / denom
         else:
             loss = F.cross_entropy(logits, targets, weight=self.class_weights)
         return loss
