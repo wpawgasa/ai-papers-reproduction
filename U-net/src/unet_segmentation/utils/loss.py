@@ -53,7 +53,7 @@ def compute_weight_map(
         sigma: Border weight width parameter.
 
     Returns:
-        Weight map of shape (H, W).
+        Weight map of shape (H, W) with dtype float32.
     """
     # Class frequency balancing
     binary_mask = (segmentation > 0).astype(np.float32)
@@ -69,7 +69,7 @@ def compute_weight_map(
     instance_ids = instance_ids[instance_ids > 0]
 
     if len(instance_ids) < 2:
-        return w_c
+        return w_c.astype(np.float32)
 
     # Compute distance to each instance border
     distances = []
@@ -85,7 +85,7 @@ def compute_weight_map(
     d2 = distances[1]
 
     w_border = w0 * np.exp(-((d1 + d2) ** 2) / (2 * sigma**2))
-    return w_c + w_border
+    return (w_c + w_border).astype(np.float32)
 
 
 class WeightedCrossEntropyLoss(nn.Module):
