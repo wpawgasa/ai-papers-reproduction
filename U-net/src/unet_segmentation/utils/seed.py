@@ -13,9 +13,9 @@ def set_seed(seed: int = 42) -> None:
     also seeds all GPU RNGs and enables cuDNN deterministic mode (which may
     reduce throughput) and disables benchmark autotuning.
 
-    Note: ``torch.use_deterministic_algorithms(True)`` is set when supported;
-    some operations may raise ``RuntimeError`` if they lack a deterministic
-    implementation.
+    Note: ``torch.use_deterministic_algorithms(True, warn_only=True)`` is set
+    when supported; non-deterministic operations will emit a warning rather
+    than raising an error.
     """
     random.seed(seed)
     np.random.seed(seed)
@@ -26,6 +26,6 @@ def set_seed(seed: int = 42) -> None:
             torch.backends.cudnn.deterministic = True
             torch.backends.cudnn.benchmark = False
     try:
-        torch.use_deterministic_algorithms(True)
+        torch.use_deterministic_algorithms(True, warn_only=True)
     except (AttributeError, TypeError):
         pass
