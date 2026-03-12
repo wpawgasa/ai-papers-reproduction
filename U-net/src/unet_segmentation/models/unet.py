@@ -10,15 +10,17 @@ import torch.nn as nn
 
 
 class DoubleConv(nn.Module):
-    """Two consecutive 3x3 convolutions, each followed by ReLU."""
+    """Two consecutive 3x3 convolutions, each followed by BatchNorm and ReLU."""
 
     def __init__(self, in_channels: int, out_channels: int, use_padding: bool = True):
         super().__init__()
         padding = 1 if use_padding else 0
         self.block = nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=padding, bias=True),
+            nn.Conv2d(in_channels, out_channels, kernel_size=3, padding=padding, bias=False),
+            nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace=True),
-            nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=padding, bias=True),
+            nn.Conv2d(out_channels, out_channels, kernel_size=3, padding=padding, bias=False),
+            nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace=True),
         )
 
@@ -108,6 +110,9 @@ class UNet(nn.Module):
                 nn.init.kaiming_normal_(m.weight, mode="fan_out", nonlinearity="relu")
                 if m.bias is not None:
                     nn.init.zeros_(m.bias)
+            elif isinstance(m, nn.BatchNorm2d):
+                nn.init.ones_(m.weight)
+                nn.init.zeros_(m.bias)
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
         # Encoder
