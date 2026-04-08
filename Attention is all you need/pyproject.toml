@@ -8,8 +8,8 @@ version = "0.1.0"
 description = "Reproduction of 'Attention Is All You Need' (Vaswani et al., NeurIPS 2017)"
 requires-python = ">=3.9"
 dependencies = [
-    "torch>=2.0.0",
-    "torchvision>=0.15.0",
+    "torch>=2.0.0,<2.7",
+    "torchvision>=0.15.0,<0.22",
     "torchtext>=0.15.0",
     "matplotlib>=3.7.0",
     "numpy>=1.24.0",
@@ -21,6 +21,10 @@ dependencies = [
     "tqdm>=4.65.0",
     "python-dotenv>=1.0.0",
 ]
+
+[tool.uv]
+index-url = "https://download.pytorch.org/whl/cu121"
+extra-index-url = ["https://pypi.org/simple"]
 
 [tool.setuptools.packages.find]
 where = ["src"]
