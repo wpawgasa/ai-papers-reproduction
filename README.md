@@ -10,6 +10,7 @@ A consolidated collection of implementation codebases used to replicate experime
 | [Deep Residual Learning for Image Recognition](https://openaccess.thecvf.com/content_cvpr_2016/papers/He_Deep_Residual_Learning_CVPR_2016_paper.pdf) | [Deep Residual Learning for Image Recognition/](Deep%20Residual%20Learning%20for%20Image%20Recognition/) | ✅ Complete |
 | [FNet: Mixing Tokens with Fourier Transforms](https://arxiv.org/abs/2105.03824) | [FNet/](FNet/) | ✅ Complete |
 | [U-Net: Convolutional Networks for Biomedical Image Segmentation](https://arxiv.org/abs/1505.04597) | [U-net/](U-net/) | ✅ Complete |
+| [Attention Is All You Need](https://arxiv.org/abs/1706.03762) | [Attention is all you need/](Attention%20is%20all%20you%20need/) | 🚧 In Progress |
 
 ### Project Highlights
 
@@ -20,6 +21,8 @@ A consolidated collection of implementation codebases used to replicate experime
 **FNet (Lee-Thorp et al., NAACL 2022)**: Replaces Transformer self-attention with 2D Fourier Transform for token mixing. Achieves 92-97% of BERT accuracy on GLUE with 1.8× faster training and zero learnable parameters in the mixing layer.
 
 **U-Net (Ronneberger et al., MICCAI 2015)**: Reproduces the symmetric encoder-decoder architecture with skip connections for image segmentation. Demonstrates that elastic deformation augmentation enables effective training from very few annotated images using the Oxford-IIIT Pet Dataset.
+
+**Attention Is All You Need (Vaswani et al., NeurIPS 2017)**: Reproduces the Transformer architecture with scaled dot-product attention, multi-head attention, and sinusoidal positional encoding for machine translation.
 
 ## Structure
 
@@ -42,6 +45,11 @@ papers-reproduction/
 │   └── README.md                               # Paper-specific docs
 ├── U-net/                                      # U-Net paper
 │   ├── src/unet_segmentation/                 # Source code
+│   ├── notebooks/                              # Experiment notebooks
+│   ├── summary.md                              # Comprehensive paper analysis
+│   └── README.md                               # Paper-specific docs
+├── Attention is all you need/                  # Transformer paper
+│   ├── src/transformer_mt/                    # Source code
 │   ├── notebooks/                              # Experiment notebooks
 │   ├── summary.md                              # Comprehensive paper analysis
 │   └── README.md                               # Paper-specific docs
@@ -80,6 +88,14 @@ jupyter notebook notebooks/experiment.ipynb
 
 ```bash
 cd U-net
+pip install -e .
+jupyter notebook notebooks/experiment.ipynb
+```
+
+### Example: Attention Is All You Need
+
+```bash
+cd "Attention is all you need"
 pip install -e .
 jupyter notebook notebooks/experiment.ipynb
 ```
