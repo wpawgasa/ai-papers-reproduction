@@ -4,7 +4,7 @@ version = "0.1.0"
 description = "Reproduction of Playing Atari with Deep Reinforcement Learning (Mnih et al., 2013) on Pong"
 requires-python = ">=3.9"
 dependencies = [
-    "torch>=2.0.0",
+    "torch==2.5.1+cu121",  # cu121 build for CUDA 12.2 driver compatibility (see [tool.uv])
     "numpy>=1.24.0",
     "gymnasium[atari]>=0.29.0",
     "ale-py>=0.8.0",
@@ -23,6 +23,14 @@ dev = [
     "black>=23.7.0",
     "ruff>=0.0.270",
 ]
+
+# Pin torch to the cu121 wheel: the CUDA 12.2 driver is too old for the cu124+
+# builds PyPI ships by default. unsafe-best-match lets uv pick the +cu121 wheel
+# from the pytorch index instead of the higher-versioned cu124 wheel on PyPI.
+[tool.uv]
+index-url = "https://download.pytorch.org/whl/cu121"
+extra-index-url = ["https://pypi.org/simple"]
+index-strategy = "unsafe-best-match"
 
 [build-system]
 requires = ["hatchling"]
